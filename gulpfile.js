@@ -77,10 +77,10 @@ gulp.task("build:js", function (done) {
 
   watchify(browserify(path.join("./client", "App.ts"), args), args)
     .plugin(tsify)
-    .transform(stringify([".html"]))
     .transform(babelify.configure({
       extensions: args.extensions
     }))
+    .transform(stringify([".html"]))
     .transform(ngAnnotatify)
     .bundle()
     .on('error', function(err){

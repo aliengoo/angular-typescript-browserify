@@ -10,7 +10,9 @@
     "experimentalDecorators": true,
     "sourceMap": true
   },
-  "files": [
-    "./client/App.ts"
+  "filesGlob": [
+    "./typings/tsd.d.ts",
+    "!./node_modules/**/*.ts",
+    "./client/**/*.ts"
   ]
 }

@@ -1,7 +1,10 @@
 ///<reference path="../typings/tsd.d.ts"/>
-import * as angular from 'angular';
+///<reference path="./about/AboutModule.ts"/>
 
-const AppModule = angular.module('App', ['ui.router']);
+
+import * as angular from "angular";
+
+const AppModule = angular.module("App", ["ui.router"]);
 
 /* @ngInject */
 function appConfig($urlRouterProvider:angular.ui.IUrlRouterProvider) {
