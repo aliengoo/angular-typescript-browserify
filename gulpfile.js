@@ -109,6 +109,6 @@ gulp.task('default', ['vendor:css', 'build:css', 'build:js'], function () {
   lp.livereload({
     start: true
   });
-  gulp.watch(['client/**/*.ts'], ["build:js"]);
+  gulp.watch(['client/**/*.ts', 'client/**/*.html'], ["build:js"]);
   gulp.watch('client/**/*.scss', ["build:css"]);
 });

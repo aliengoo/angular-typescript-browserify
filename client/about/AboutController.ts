@@ -1,11 +1,9 @@
-import * as angular from 'angular';
-
 export default class AboutController {
 
-  public message:String;
+  public message:string;
 
   /* @ngInject */
-  constructor(private $http:angular.IHttpService) {
-
+  constructor() {
+    this.message = "TestHello";
   }
 }

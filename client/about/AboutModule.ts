@@ -1,16 +1,22 @@
+///<reference path="../../typings/tsd.d.ts"/>
+///<reference path="AboutController.ts"/>
+
 import * as angular from 'angular';
-import * as angularUiRouter from 'angular-ui-router';
+import 'angular-ui-router';
 import AboutController from "./AboutController";
-import * as aboutHtml from './about.html';
 const About = angular.module('About', ['ui.router']);
 
 /* @ngInject */
-function aboutConfig($stateProvider:angularUiRouter.IStateProvider) {
+function aboutConfig($stateProvider:angular.ui.IStateProvider) {
+  const template:string = require("./about.html");
   $stateProvider.state('about', {
     url: '/about',
     controller: AboutController,
-    template: aboutHtml
+    controllerAs: "about",
+    template
   });
 }
+
+About.config(aboutConfig);
 
 export default About;
