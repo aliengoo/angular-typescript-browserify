@@ -6,11 +6,12 @@ var browserify = require('browserify');
 var babelify = require('babelify');
 var tsify = require('tsify');
 var stringify = require('stringify');
-var ngAnnotatify = require('browserify-ngannotate');
 var watchify = require('watchify');
+var uglifyify = require('uglifyify');
 var path = require('path');
 var source = require('vinyl-source-stream');
-var exorcist   = require('exorcist');
+var exorcist = require('exorcist');
+var args = require("yargs").v;
 var WindowsToaster = require('node-notifier').WindowsToaster;
 var notifier = new WindowsToaster({
   withFallback: true
@@ -18,7 +19,7 @@ var notifier = new WindowsToaster({
 
 var mapfile = path.join(__dirname, 'public/js', 'app.js.map');
 
-gulp.task('vendor:fonts', function() {
+gulp.task('vendor:fonts', function () {
   var src = [
     'node_modules/bootstrap/fonts/*',
     'node_modules/font-awesome/fonts/*'
@@ -70,6 +71,41 @@ gulp.task('build:css', function () {
     .pipe(lp.livereload());
 });
 
+
+gulp.task("build:js:production", function (done) {
+  var args = {
+    debug: false,
+    extensions: [".ts", ".js"]
+  };
+
+  browserify(path.join("./client", "App.ts"), args)
+    .plugin(tsify)
+    .transform(babelify.configure({
+      extensions: args.extensions
+    })).transform(stringify([".html"]))
+    .transform({
+      global: true,
+      mangle: false,
+      comments: true,
+      compress: {
+        angular: true
+      }
+    }, "uglifyify")
+    .bundle()
+    .on('error', function (err) {
+      console.error(err.message);
+      notifier.notify({
+        title: "angular-browserify build:css",
+        message: err.message
+      });
+      done();
+    })
+    .pipe(exorcist(mapfile))
+    .pipe(source("app.js"))
+    .pipe(gulp.dest("./public/js")).on('end', function () {
+    done();
+  });
+});
 gulp.task("build:js", function (done) {
   var args = watchify.args;
   args.extensions = ['.ts', '.js'];
@@ -81,25 +117,24 @@ gulp.task("build:js", function (done) {
       extensions: args.extensions
     }))
     .transform(stringify([".html"]))
-    .transform(ngAnnotatify)
     .bundle()
-    .on('error', function(err){
+    .on('error', function (err) {
       console.error(err.message);
       notifier.notify({
         title: "angular-browserify build:css",
         message: err.message,
-        icon: path.join(__dirname,'.things/icons/browserify.png')
+        icon: path.join(__dirname, '.things/icons/browserify.png')
       });
       done();
     })
     .pipe(exorcist(mapfile))
     .pipe(source("app.js"))
     .pipe(gulp.dest("./public/js"))
-    .pipe(lp.livereload()).on('end', function(){
+    .pipe(lp.livereload()).on('end', function () {
     notifier.notify({
       title: "angular-browserify build:css",
       message: "Browserify finished",
-      icon: path.join(__dirname,'.things/icons/browserify.png')
+      icon: path.join(__dirname, '.things/icons/browserify.png')
     });
     done();
   });

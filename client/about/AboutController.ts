@@ -1,9 +1,9 @@
 export default class AboutController {
 
-  public message:string;
+  public message: String;
 
   /* @ngInject */
   constructor() {
-    this.message = "TestHello";
+    this.message = "TestTest";
   }
 }
