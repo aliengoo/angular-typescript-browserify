@@ -1,18 +1,22 @@
-///<reference path="../typings/tsd.d.ts"/>
-
 import * as angular from "angular";
 import "angular-ui-router";
-import AboutModule from "./about/AboutModule";
+import "./about/About";
 import AppController from "./AppController";
 
-const AppModule = angular.module("App", ["ui.router", AboutModule.name]);
+appConfig.$inject = ["$urlRouterProvider"];
 
-/* @ngInject */
-function appConfig($urlRouterProvider:angular.ui.IUrlRouterProvider) {
+function appConfig($urlRouterProvider: angular.ui.IUrlRouterProvider) {
   $urlRouterProvider.otherwise("/about");
 }
-AppModule.controller("AppController", AppController);
-AppModule.config(appConfig);
 
-export default AppModule;
+const App = angular.module("App", ["ui.router", "about"])
+  .config(appConfig)
+  .controller("AppController", AppController);
+
+export default App;
+
+
+
+
+
 

@@ -7,6 +7,7 @@ var babelify = require('babelify');
 var tsify = require('tsify');
 var stringify = require('stringify');
 var watchify = require('watchify');
+var inject = require('browserify-ngannotate');
 var uglifyify = require('uglifyify');
 var path = require('path');
 var source = require('vinyl-source-stream');
@@ -71,47 +72,14 @@ gulp.task('build:css', function () {
     .pipe(lp.livereload());
 });
 
-
-gulp.task("build:js:production", function (done) {
-  var args = {
-    debug: false,
-    extensions: [".ts", ".js"]
-  };
-
-  browserify(path.join("./client", "App.ts"), args)
-    .plugin(tsify)
-    .transform(babelify.configure({
-      extensions: args.extensions
-    })).transform(stringify([".html"]))
-    .transform({
-      global: true,
-      mangle: false,
-      comments: true,
-      compress: {
-        angular: true
-      }
-    }, "uglifyify")
-    .bundle()
-    .on('error', function (err) {
-      console.error(err.message);
-      notifier.notify({
-        title: "angular-browserify build:css",
-        message: err.message
-      });
-      done();
-    })
-    .pipe(exorcist(mapfile))
-    .pipe(source("app.js"))
-    .pipe(gulp.dest("./public/js")).on('end', function () {
-    done();
-  });
-});
 gulp.task("build:js", function (done) {
   var args = watchify.args;
   args.extensions = ['.ts', '.js'];
   args.debug = true;
 
-  watchify(browserify(path.join("./client", "App.ts"), args), args)
+  var src = ["./typings/tsd.d.ts", "./client/App.ts"];
+
+  watchify(browserify(src, args), args)
     .plugin(tsify)
     .transform(babelify.configure({
       extensions: args.extensions
@@ -120,11 +88,11 @@ gulp.task("build:js", function (done) {
     .bundle()
     .on('error', function (err) {
       console.error(err.message);
-      notifier.notify({
-        title: "angular-browserify build:css",
-        message: err.message,
-        icon: path.join(__dirname, '.things/icons/browserify.png')
-      });
+      //notifier.notify({
+      //  title: "angular-browserify build:css",
+      //  message: err.message,
+      //  icon: path.join(__dirname, '.things/icons/browserify.png')
+      //});
       done();
     })
     .pipe(exorcist(mapfile))
